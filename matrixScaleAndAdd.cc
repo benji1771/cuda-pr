@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
 
         dFile << "\n";
         dFile.close();
-        printf("Time taken: %lld\n", std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
+        printf("Time taken: %ld\n", std::chrono::duration_cast<std::chrono::microseconds>(end - start).count());
     }else{
         printf("Invalid Number of Arguments\n");
     }

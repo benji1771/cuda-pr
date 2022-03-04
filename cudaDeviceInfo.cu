@@ -23,7 +23,7 @@ int main() {
       //shared mem per block
       printf("Shared Memory Per Block: %zu \n", devProp.sharedMemPerBlock);
       //max block dimensions
-      printf("Max Block Per MultiProcessor: %d \n", devProp.maxBlocksPerMultiProcessor);
+      //printf("Max Block Per MultiProcessor: %d \n", devProp.maxBlocksPerMultiProcessor);
       //number of multiprocessors
       printf("Number of Multiprocessors: %d \n", devProp.multiProcessorCount);
       //max grid dimensions

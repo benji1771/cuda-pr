@@ -9,6 +9,18 @@ clean:
 	rm -f *.exp
 test:
 	./cudaDeviceInfo.out
-	./matrixGenerator.out 1000
+	./matrixGenerator.out 500
 	./matrixScaleAndAdd.out 3.1 b c d
 	./cudaMatrixScaleAndAdd.out 3.1 b c dm
+	./matrixGenerator.out 600
+	./matrixScaleAndAdd.out 3.1 b c d
+	./cudaMatrixScaleAndAdd.out 3.1 b c dm
+	./matrixGenerator.out 700
+	./matrixScaleAndAdd.out 3.1 b c d
+	./cudaMatrixScaleAndAdd.out 3.1 b c dm
+	./matrixGenerator.out 800
+	./matrixScaleAndAdd.out 3.1 b c d
+	./cudaMatrixScaleAndAdd.out 3.1 b c dm
+	./matrixGenerator.out 900
+	./matrixScaleAndAdd.out 3.1 b c d
+	./matrixScaleAndAdd.out 3.1 b c dm

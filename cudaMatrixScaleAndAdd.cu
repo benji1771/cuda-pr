@@ -54,10 +54,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    
     int N = brow * bcol;
-     
-    
 
     int THREADS = 512;
     int BLOCKS = (N + THREADS - 1 ) / THREADS;
@@ -80,7 +77,7 @@ int main(int argc, char* argv[]) {
     cudaDeviceSynchronize();
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now(); //time calculations end
 
-    printf("Time taken: %lld\n", std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()); //print time calculations
+    printf("Time taken: %ld\n", std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()); //print time calculations
 
     //open d stream
     std::ofstream dstream;
