@@ -12,7 +12,7 @@ void cleanupAndClose(int exitCode);
 SDL_Surface* loadImage(char *filename);
 
 // shift red -> green -> blue -> red in the given image
-void shiftImage(SDL_Surface *image);
+void greyImage(SDL_Surface *image);
 
 inline void checkSDL(void* result)
 {
