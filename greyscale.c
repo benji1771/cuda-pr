@@ -92,12 +92,12 @@ void greyimage(SDL_Surface *image)
 
         	Uint32 b = pixel & image->format->Bmask; // Isolate blue component
 
-
+            Uint32 a = pixel & image->format->Amask;
 
 			// Build the shifted pixel
-			pixels[(y * image->w) + x] = (b * 0.07) |
-										 (r * 0.21) |
-										 (g * 0.71) |
+			pixels[(y * image->w) + x] = (Uint32) (b * 0.07) |
+										 (Uint32) (r * 0.21) |
+										 (Uint32) (g * 0.71) |
 										 (a);
         }
     }
