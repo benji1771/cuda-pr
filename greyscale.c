@@ -14,15 +14,8 @@ SDL_Surface* loadImage(char *filename);
 // shift red -> green -> blue -> red in the given image
 void greyimage(SDL_Surface *image);
 
-inline void checkSDL(void* result)
-{
-    if(result == NULL)
-    {
-        fprintf(stderr, "Error: %s\n", SDL_GetError());
-        cleanupAndClose(EXIT_FAILURE);
-    }
-}
 
+void checkSDL(void* result);
 SDL_Surface *source;
 
 int main(int argc, char *argv[])
@@ -51,7 +44,14 @@ int main(int argc, char *argv[])
     cleanupAndClose(EXIT_SUCCESS);
     return EXIT_SUCCESS;
 }
-
+void checkSDL(void* result)
+{
+    if(result == NULL)
+    {
+        fprintf(stderr, "Error: %s\n", SDL_GetError());
+        cleanupAndClose(EXIT_FAILURE);
+    }
+}
 void cleanupAndClose(int exitCode)
 {
     if(source) SDL_FreeSurface(source);
