@@ -105,7 +105,7 @@ void greyimage(SDL_Surface *image)
 		pixels[(y * image->w) + x] = (newPix << image->format->Rshift) |
 					     (newPix << image->format->Gshift) |
    					     (newPix << image->format->Bshift) |
-					     (newPix);
+					     (newPix << image->format->Ashift);
         }
     }
 }
