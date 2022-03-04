@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     checkSDL(source = loadImage(argv[1]));
 
     printf("grey..ing?\n");
-    shiftImage(source);
+    greyimage(source);
 
 	// Save image
     printf("Saving: onegreyimage.png\n");
