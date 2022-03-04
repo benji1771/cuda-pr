@@ -87,25 +87,25 @@ void greyimage(SDL_Surface *image)
         	Uint32 pixel = pixels[(y * image->w) + x];
 
         	Uint32 r = (pixel & image->format->Rmask); // Isolate red component
-		r = r >> image->format->Rshift;
-		//r = r * 0.21f;
+		//r = r >> image->format->Rshift;
+		r = r * 0.21f;
         	Uint32 g = (pixel & image->format->Gmask); // Isolate green component
-		g = g >> image->format->Gshift;
-		//g = g * 0.71f;
+		//g = g >> image->format->Gshift;
+		g = g * 0.71f;
         	Uint32 b = (pixel & image->format->Bmask); // Isolate blue component
-		b = b >> image->format->Bshift;
-		
+		//b = b >> image->format->Bshift;
+		b = b * 0.07f;
 		Uint32 a = (pixel & image->format->Amask);
-		a = a >> image->format->Ashift;
+		//a = a >> image->format->Ashift;
 
-		Uint32 newPix = 0.21f * r + 0.71f * g + 0.07f * b + a;
+		Uint32 newPix = 0.21f * r + 0.71f * g + 0.07f * b;
 		//b = b * 0.07f;
 	        
 			// Build the grey pixels
-		pixels[(y * image->w) + x] = (newPix << image->format->Rshift) |
-					     (newPix << image->format->Gshift) |
-   					     (newPix << image->format->Bshift) |
-					     (newPix << image->format->Ashift);
+		pixels[(y * image->w) + x] = (r) |
+					     (g) |
+   					     (b) |
+					     (a);
         }
     }
 }
