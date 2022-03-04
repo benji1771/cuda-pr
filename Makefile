@@ -1,4 +1,4 @@
-all: cudaDeviceInfo.cu 
+all:
 	nvcc cudaDeviceInfo.cu -O3 -o cudaDeviceInfo.out 
 	nvcc matrixGenerator.cc -O3 -o matrixGenerator.out
 	nvcc matrixScaleAndAdd.cc -O3 -o matrixScaleAndAdd.out  
@@ -13,17 +13,5 @@ test:
 	./matrixGenerator.out 500
 	./matrixScaleAndAdd.out 3.1 b c d
 	./cudaMatrixScaleAndAdd.out 3.1 b c dm
-	./matrixGenerator.out 600
-	./matrixScaleAndAdd.out 3.1 b c d
-	./cudaMatrixScaleAndAdd.out 3.1 b c dm
-	./matrixGenerator.out 700
-	./matrixScaleAndAdd.out 3.1 b c d
-	./cudaMatrixScaleAndAdd.out 3.1 b c dm
-	./matrixGenerator.out 800
-	./matrixScaleAndAdd.out 3.1 b c d
-	./cudaMatrixScaleAndAdd.out 3.1 b c dm
-	./matrixGenerator.out 900
-	./matrixScaleAndAdd.out 3.1 b c d
-	./matrixScaleAndAdd.out 3.1 b c dm
 	./greyscale.out testImage.png oneThreadGrey.png
 
