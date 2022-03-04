@@ -21,7 +21,7 @@ SDL_Surface *source;
 int main(int argc, char *argv[])
 {
     // Check that we have the right number of args.
-    if(argc != 2)
+    if(argc != 3)
     {
         fprintf(stderr, "Usage: %s source \n", argv[0]);
         cleanupAndClose(EXIT_FAILURE);
@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
     greyimage(source);
 
 	// Save image
-    printf("Saving: onegreyimage.png\n");
-    IMG_SavePNG(source, "onegreyimage.png");
+    printf("Saving: %s\n", argv[2]);
+    IMG_SavePNG(source, argv[2]);
     // I have heard that the PNG writer is buggy... I have not had any trouble, but you
     // can also use the BMP writer (hard to mess up BMPs).
     //SDL_SaveBMP(source, "shiftOut.bmp");

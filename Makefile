@@ -3,6 +3,7 @@ all: cudaDeviceInfo.cu
 	nvcc matrixGenerator.cc -O3 -o matrixGenerator.out
 	nvcc matrixScaleAndAdd.cc -O3 -o matrixScaleAndAdd.out  
 	nvcc cudaMatrixScaleAndAdd.cu -O3 -o cudaMatrixScaleAndAdd.out
+	nvcc greyscale.c -lSDL2 -lSDL2_image -o greyscale.out
 clean: 
 	rm -f *.out
 	rm -f *.lib
@@ -24,3 +25,5 @@ test:
 	./matrixGenerator.out 900
 	./matrixScaleAndAdd.out 3.1 b c d
 	./matrixScaleAndAdd.out 3.1 b c dm
+	./greyscale.out testImage.png oneThreadGrey.png
+
