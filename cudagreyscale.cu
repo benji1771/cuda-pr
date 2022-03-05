@@ -11,7 +11,28 @@ void cleanupAndClose(int exitCode);
 SDL_Surface* loadImage(char *filename);
 
 // grey image out
-__global__ void greyImage(Uint32 *pixels, int size);
+__global__ void greyImage(Uint32 *pixels, int size)
+{
+    int itx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (itx < size) {
+
+        Uint32 pixel = pixels[itx];
+
+        Uint32 r = pixel & 0x000000ff; // Isolate red component
+        Uint32 g = pixel & 0x0000ff00; // Isolate green component
+        g = g >> 8;                    // Shift it down
+        Uint32 b = pixel & 0x00ff0000; // Isolate blue component
+        b = b >> 16;                   // Shift it down
+        Uint32 a = pixel & 0xff000000; // Isolate alpha component
+
+
+        Uint32 newPix = 0.21f * r + 0.71f * g + 0.07f * b;
+        // Build greyscaled pixel
+        pixels[itx] = newPix | (newPix << 8) | (newPix << 16) | (a);
+        
+    }
+}
+
 
 SDL_Surface *source = NULL;
 Uint32 *pixels = NULL;
@@ -34,7 +55,7 @@ int main(int argc, char *argv[])
     }
     int N = source->h * source->w;
     int THREADS = 256;
-    //int BLOCKS = (N + THREADS - 1 ) / THREADS;
+    int BLOCKS = (N + THREADS - 1 ) / THREADS;
 
     // Copy the pixels to the GPU (add error checking)
     printf("Copying pixels to GPU\n");
@@ -42,7 +63,7 @@ int main(int argc, char *argv[])
     cudaMemcpy(pixels, source->pixels, sizeof(Uint32) * source->h * source->w, cudaMemcpyHostToDevice);
 
     printf("cuda grey...ing?\n");
-    greyImage<<<1,THREADS>>>(pixels, N);
+    greyImage<<<BLOCKS,THREADS>>>(pixels, N);
     	
     // Copy the pixels back to the host (add error checking)
     printf("Copying pixels to CPU\n");
@@ -81,25 +102,3 @@ SDL_Surface* loadImage(char *filename)
     return image;
 }
 
-//kernel code
-__global__ void greyImage(Uint32 *pixels, int size)
-{
-    int itx = blockIdx.x * blockDim.x + threadIdx.x;
-    if (itx < size) {
-
-    	Uint32 pixel = pixels[itx];
-
-    	Uint32 r = pixel & 0x000000ff; // Isolate red component
-    	Uint32 g = pixel & 0x0000ff00; // Isolate green component
-    	g = g >> 8;                    // Shift it down
-    	Uint32 b = pixel & 0x00ff0000; // Isolate blue component
-    	b = b >> 16;                   // Shift it down
-    	Uint32 a = pixel & 0xff000000; // Isolate alpha component
-    		                   // Shift it down
-
-    	Uint32 newPix = 0.21f * r + 0.71f * g + 0.07f * b;
-        // Build greyscaled pixel
-    	pixels[itx] = newPix | (newPix << 8) | (newPix << 16) | (a);
-        
-    }
-}
