@@ -19,7 +19,7 @@ Uint32 *pixels = NULL;
 int main(int argc, char *argv[])
 {
     // Check that we have the right number of args.
-    if(argc != 2)
+    if(argc != 3)
     {
         fprintf(stderr, "Usage: %s source \n", argv[0]);
         cleanupAndClose(EXIT_FAILURE);
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     cudaMemcpy(pixels, source->pixels, sizeof(Uint32) * source->h * source->w, cudaMemcpyHostToDevice);
 
     printf("cuda grey...ing?\n");
-    shiftImage<<<BLOCKS,THREADS>>>(pixels, source->w, source->h);
+    greyImage<<<BLOCKS,THREADS>>>(pixels, source->w, source->h);
 
     // Copy the pixels back to the host (add error checking)
     printf("Copying pixels to CPU\n");
