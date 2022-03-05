@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     }
     int N = source->h * source->w;
     int THREADS = 256;
-    int BLOCKS = (N + THREADS - 1 ) / THREADS;
+    //int BLOCKS = (N + THREADS - 1 ) / THREADS;
 
     // Copy the pixels to the GPU (add error checking)
     printf("Copying pixels to GPU\n");
@@ -42,8 +42,8 @@ int main(int argc, char *argv[])
     cudaMemcpy(pixels, source->pixels, sizeof(Uint32) * source->h * source->w, cudaMemcpyHostToDevice);
 
     printf("cuda grey...ing?\n");
-    greyImage<<<BLOCKS,THREADS>>>(pixels, source->w, source->h);
-    cudaDeviceSynchronize();	
+    greyImage<<<1,THREADS>>>(pixels, source->w, source->h);
+    	
     // Copy the pixels back to the host (add error checking)
     printf("Copying pixels to CPU\n");
     cudaMemcpy(source->pixels, pixels, sizeof(Uint32) * source->h * source->w, cudaMemcpyDeviceToHost);
@@ -81,25 +81,26 @@ SDL_Surface* loadImage(char *filename)
     return image;
 }
 
-// A still less than optimal shifter...
+//kernel code
 __global__ void greyImage(Uint32 *pixels, int w, int h)
 {
     int y = blockIdx.y * blockDim.y + threadIdx.y;
     int x = blockIdx.x * blockDim.x + threadIdx.x;
-    if (y >= h || x >= w) return;
+    if (y < h || x < w) {
 
-    Uint32 pixel = pixels[(y * w) + x];
-    Uint32 r = pixel & 0x000000ff; // Isolate red component
-    Uint32 g = pixel & 0x0000ff00; // Isolate green component
-    g = g >> 8;                    // Shift it down
-    Uint32 b = pixel & 0x00ff0000; // Isolate blue component
-    b = b >> 16;                   // Shift it down
-    Uint32 a = pixel & 0xff000000; // Isolate alpha component
-    a = a >> 24;                   // Shift it down
+    	Uint32 pixel = pixels[(y * w) + x];
 
-    Uint32 newPix = 0.21f * r + 0.71f * g + 0.07f * b;
-    // Build the shifted pixel
-    pixels[(y * w) + x] = newPix | (newPix << 8) | (newPix << 16) | (a << 24) ;
+    	Uint32 r = pixel & 0x000000ff; // Isolate red component
+    	Uint32 g = pixel & 0x0000ff00; // Isolate green component
+    	g = g >> 8;                    // Shift it down
+    	Uint32 b = pixel & 0x00ff0000; // Isolate blue component
+    	b = b >> 16;                   // Shift it down
+    	Uint32 a = pixel & 0xff000000; // Isolate alpha component
+    		                   // Shift it down
+
+    	Uint32 newPix = 0.21f * r + 0.71f * g + 0.07f * b;
+        // Build greyscaled pixel
+    	pixels[(y * w) + x] = newPix | (newPix << 8) | (newPix << 16) | (a);
         
-    
+    }
 }
