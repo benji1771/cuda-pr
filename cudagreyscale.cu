@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
     printf("cuda grey...ing?\n");
     greyImage<<<BLOCKS,THREADS>>>(pixels, source->w, source->h);
-
+    cudaDeviceSynchronize();	
     // Copy the pixels back to the host (add error checking)
     printf("Copying pixels to CPU\n");
     cudaMemcpy(source->pixels, pixels, sizeof(Uint32) * source->h * source->w, cudaMemcpyDeviceToHost);
