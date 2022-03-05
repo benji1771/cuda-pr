@@ -11,7 +11,7 @@ void cleanupAndClose(int exitCode);
 SDL_Surface* loadImage(char *filename);
 
 // grey image out
-__global__ void greyImage(Uint32 *pixels, int w, int h);
+__global__ void greyImage(Uint32 *pixels, int size);
 
 SDL_Surface *source = NULL;
 Uint32 *pixels = NULL;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     cudaMemcpy(pixels, source->pixels, sizeof(Uint32) * source->h * source->w, cudaMemcpyHostToDevice);
 
     printf("cuda grey...ing?\n");
-    greyImage<<<1,THREADS>>>(pixels, source->w, source->h);
+    greyImage<<<1,THREADS>>>(pixels, N);
     	
     // Copy the pixels back to the host (add error checking)
     printf("Copying pixels to CPU\n");
@@ -82,13 +82,12 @@ SDL_Surface* loadImage(char *filename)
 }
 
 //kernel code
-__global__ void greyImage(Uint32 *pixels, int w, int h)
+__global__ void greyImage(Uint32 *pixels, int size)
 {
-    int y = blockIdx.y * blockDim.y + threadIdx.y;
-    int x = blockIdx.x * blockDim.x + threadIdx.x;
-    if (y < h || x < w) {
+    int itx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (itx < size) {
 
-    	Uint32 pixel = pixels[(y * w) + x];
+    	Uint32 pixel = pixels[itx];
 
     	Uint32 r = pixel & 0x000000ff; // Isolate red component
     	Uint32 g = pixel & 0x0000ff00; // Isolate green component
@@ -100,7 +99,7 @@ __global__ void greyImage(Uint32 *pixels, int w, int h)
 
     	Uint32 newPix = 0.21f * r + 0.71f * g + 0.07f * b;
         // Build greyscaled pixel
-    	pixels[(y * w) + x] = newPix | (newPix << 8) | (newPix << 16) | (a);
+    	pixels[itx] = newPix | (newPix << 8) | (newPix << 16) | (a);
         
     }
 }
