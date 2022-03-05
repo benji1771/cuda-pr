@@ -26,16 +26,18 @@ void blurImage(SDL_Surface *image, int a)
             int xbegin = x - a;
             int ybegin = y - a;
             int xend = x + a;
-            int yend = x + a;
+            int yend = y + a;
             Uint32 avg = pixel;
             int count = 1;
             for(int piy = ybegin; piy <= yend; piy++){
-                if(piy < 0 || piy >= image->h) continue;
+                if(piy < 0 || piy >= image->h) {}else{
                 for(int pix = xbegin; pix <= xend; pix++){
-                    if(pix < 0 || pix >= image->w || (pix == x && piy == y)) continue;
+                    if(pix < 0 || pix >= image->w || (pix == x && piy == y)){}else{
                     avg += pixels[(piy * image->w) + pix];
                     count++;
+		    }
                 }
+		}
             }
             
             pixel = avg / count;
@@ -74,7 +76,7 @@ int main(int argc, char *argv[])
 
     checkSDL(source = loadImage(argv[2]));
 
-    printf("grey..ing?\n");
+    printf("blur...blur....blur with a = %d\n", a);
     blurImage(source, a);
 
 	// Save image
