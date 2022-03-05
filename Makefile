@@ -17,4 +17,4 @@ test:
 	./cudaMatrixScaleAndAdd.out 3.1 b c dm
 	./greyscale.out testImage.png onethreadgrey.png
 	./cudagreyscale.out testImage.png multithreadgrey.png
-	./blurImage.out 1 testImage.png oneblurimage.png
+	./blurImage.out 2 testImage.png oneblurimage.png

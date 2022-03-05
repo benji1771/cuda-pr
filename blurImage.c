@@ -12,7 +12,7 @@ void cleanupAndClose(int exitCode);
 SDL_Surface* loadImage(char *filename);
 
 // blurImage
-void blurimage(SDL_Surface *image, int a);
+void blurImage(SDL_Surface *image, int a);
 
 
 void checkSDL(void* result);
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     checkSDL(source = loadImage(argv[2]));
 
     printf("grey..ing?\n");
-    blurimage(source, a);
+    blurImage(source, a);
 
 	// Save image
     printf("Saving: %s\n", argv[3]);
@@ -79,7 +79,7 @@ SDL_Surface* loadImage(char *filename)
 }
 
 
-void blurimage(SDL_Surface *image, int a)
+void blurImage(SDL_Surface *image, int a)
 {
 	Uint32 *pixels = (Uint32 *)image->pixels;
     for(int y = 0; y < image->h; y++)
