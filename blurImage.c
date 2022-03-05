@@ -12,7 +12,48 @@ void cleanupAndClose(int exitCode);
 SDL_Surface* loadImage(char *filename);
 
 // blurImage
-void blurImage(SDL_Surface *image, int a);
+void blurImage(SDL_Surface *image, int a)
+{
+	Uint32 *pixels = (Uint32 *)image->pixels;
+    for(int y = 0; y < image->h; y++)
+    {
+        for(int x = 0; x < image->w; x++)
+        {
+            Uint32 pixel = pixels[(y * image->w) + x];
+        	Uint32 a = (pixel & image->format->Amask);
+
+
+            int xbegin = x - a;
+            int ybegin = y - a;
+            int xend = x + a;
+            int yend = x + a;
+            Uint32 avg = pixel;
+            int count = 1;
+            for(int piy = ybegin; piy < yend; piy++){
+                if(piy < 0 || piy >= image->h) continue;
+                for(int pix = xbegin; pix < xend; pix++){
+                    if(pix < 0 || pix >= image->w || (pix == x && piy == y)) continue;
+                    avg += pixels[(piy * image->w) + pix];
+                    count++;
+                }
+            }
+            
+            pixel = avg / count;
+            Uint32 r = (pixel & image->format->Rmask); // Isolate red component
+            Uint32 g = (pixel & image->format->Gmask); // Isolate green component
+            Uint32 b = (pixel & image->format->Bmask); // Isolate blue component
+
+
+            
+		
+                // Build the grey pixels
+            pixels[(y * image->w) + x] = (r) | 
+                                         (g) | 
+                                         (b) | 
+                                         (a);
+        }
+    }
+}
 
 
 void checkSDL(void* result);
@@ -79,49 +120,4 @@ SDL_Surface* loadImage(char *filename)
 }
 
 
-void blurImage(SDL_Surface *image, int a)
-{
-	Uint32 *pixels = (Uint32 *)image->pixels;
-    for(int y = 0; y < image->h; y++)
-    {
-        for(int x = 0; x < image->w; x++)
-        {
-            Uint32 pixel = pixels[(y * image->w) + x];
-        	Uint32 a = (pixel & image->format->Amask);
 
-
-            int xbegin = x - a;
-            int ybegin = y - a;
-            int xend = x + a;
-            int yend = x + a;
-            Uint32 avg = pixel;
-            int count = 1;
-            for(int piy = ybegin; piy < yend; piy++){
-                if(piy < 0 || piy >= image->h) continue;
-                for(int pix = xbegin; pix < xend; pix++){
-                    if(pix < 0 || pix >= image->w || (pix == x && piy == y)) continue;
-                    avg += pixels[(piy * image->w) + pix];
-                    count++;
-                }
-            }
-            
-            pixel = avg / count;
-            Uint32 r = (pixel & image->format->Rmask); // Isolate red component
-
-
-            Uint32 g = (pixel & image->format->Gmask); // Isolate green component
-
-
-            Uint32 b = (pixel & image->format->Bmask); // Isolate blue component
-
-
-            
-		
-                // Build the grey pixels
-            pixels[(y * image->w) + x] = (r) | 
-                                         (g) | 
-                                         (b) | 
-                                         (a);
-        }
-    }
-}
