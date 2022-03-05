@@ -11,8 +11,8 @@ void cleanupAndClose(int exitCode);
 // Load a given image
 SDL_Surface* loadImage(char *filename);
 
-// greyscale Image
-void greyimage(SDL_Surface *image);
+// blurImage
+void blurimage(SDL_Surface *image, int a);
 
 
 void checkSDL(void* result);
@@ -21,7 +21,7 @@ SDL_Surface *source;
 int main(int argc, char *argv[])
 {
     // Check that we have the right number of args.
-    if(argc != 3)
+    if(argc != 5)
     {
         fprintf(stderr, "Usage: %s source \n", argv[0]);
         cleanupAndClose(EXIT_FAILURE);
@@ -29,14 +29,16 @@ int main(int argc, char *argv[])
 
     // We not do need to initialize SDL to load image data so we get right to
     // loading the source image.
-    checkSDL(source = loadImage(argv[1]));
+    int a = atoi(argv[1]);
+
+    checkSDL(source = loadImage(argv[2]));
 
     printf("grey..ing?\n");
-    greyimage(source);
+    blurimage(source, a);
 
 	// Save image
-    printf("Saving: %s\n", argv[2]);
-    IMG_SavePNG(source, argv[2]);
+    printf("Saving: %s\n", argv[3]);
+    IMG_SavePNG(source, argv[3]);
     // I have heard that the PNG writer is buggy... I have not had any trouble, but you
     // can also use the BMP writer (hard to mess up BMPs).
     //SDL_SaveBMP(source, "shiftOut.bmp");
@@ -77,40 +79,49 @@ SDL_Surface* loadImage(char *filename)
 }
 
 
-void greyimage(SDL_Surface *image)
+void blurimage(SDL_Surface *image, int a)
 {
 	Uint32 *pixels = (Uint32 *)image->pixels;
     for(int y = 0; y < image->h; y++)
     {
         for(int x = 0; x < image->w; x++)
         {
-        	Uint32 pixel = pixels[(y * image->w) + x];
+            Uint32 pixel = pixels[(y * image->w) + x];
+        	Uint32 a = (pixel & image->format->Amask);
 
-        	Uint32 r = (pixel & image->format->Rmask); // Isolate red component
-		//r = r >> image->format->Rshift;
-		//r = r * 0.21f;
-		r = r >> image->format->Rshift;
 
-        	Uint32 g = (pixel & image->format->Gmask); // Isolate green component
-		//g = g >> image->format->Gshift;
-		//g = g * 0.71f;
-		g = g >> image->format->Gshift;
+            int xbegin = x - a;
+            int ybegin = y - a;
+            int xend = x + a;
+            int yend = x + a;
+            Uint32 avg = 0;
+            int count = 0;
+            for(int piy = ybegin; piy < yend; piy++){
+                if(piy < 0 || piy >= image->h) continue;
+                for(int pix = xbegin; pix < xend; pix++){
+                    if(pix < 0 || pix >= image->w) continue;
+                    avg += pixels[(piy * image->w) + pix];
+                    count++;
+                }
+            }
+            
+            pixel = avg / count;
+            Uint32 r = (pixel & image->format->Rmask); // Isolate red component
 
-        	Uint32 b = (pixel & image->format->Bmask); // Isolate blue component
-		//b = b >> image->format->Bshift;
-		//b = b * 0.07f;
-		b = b >> image->format->Bshift;
 
-		Uint32 a = (pixel & image->format->Amask);
-		a = a >> image->format->Ashift;
+            Uint32 g = (pixel & image->format->Gmask); // Isolate green component
+
+
+            Uint32 b = (pixel & image->format->Bmask); // Isolate blue component
+
+
+            
 		
-		Uint32 newPix = 0.21f * r + 0.71f * g + 0.07f * b;
-		
-	        
-			// Build the grey pixels
-		pixels[(y * image->w) + x] = (newPix << image->format->Rshift) | (newPix << image->format->Gshift)
-						| (newPix << image->format->Bshift) | (a << image->format->Ashift);
+                // Build the grey pixels
+            pixels[(y * image->w) + x] = (r) | 
+                                         (g) | 
+                                         (b) | 
+                                         (a);
         }
     }
 }
-
