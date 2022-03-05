@@ -4,6 +4,7 @@ all:
 	nvcc matrixScaleAndAdd.cc -O3 -o matrixScaleAndAdd.out  
 	nvcc cudaMatrixScaleAndAdd.cu -O3 -o cudaMatrixScaleAndAdd.out
 	nvcc greyscale.c -lSDL2 -lSDL2_image -o greyscale.out
+	nvcc cudagreyscale.cu -lSDL2 -lSDL2_image -o cudagreyscale.out
 clean: 
 	rm -f *.out
 	rm -f *.lib
@@ -13,5 +14,6 @@ test:
 	./matrixGenerator.out 500
 	./matrixScaleAndAdd.out 3.1 b c d
 	./cudaMatrixScaleAndAdd.out 3.1 b c dm
-	./greyscale.out testImage.png oneThreadGrey.png
+	./greyscale.out testImage.png onethreadgrey.png
+	./cudagreyscale.out testImage.png multithreadgrey.png
 
