@@ -21,7 +21,7 @@ SDL_Surface *source;
 int main(int argc, char *argv[])
 {
     // Check that we have the right number of args.
-    if(argc != 5)
+    if(argc != 4)
     {
         fprintf(stderr, "Usage: %s source \n", argv[0]);
         cleanupAndClose(EXIT_FAILURE);
@@ -94,12 +94,12 @@ void blurimage(SDL_Surface *image, int a)
             int ybegin = y - a;
             int xend = x + a;
             int yend = x + a;
-            Uint32 avg = 0;
-            int count = 0;
+            Uint32 avg = pixel;
+            int count = 1;
             for(int piy = ybegin; piy < yend; piy++){
                 if(piy < 0 || piy >= image->h) continue;
                 for(int pix = xbegin; pix < xend; pix++){
-                    if(pix < 0 || pix >= image->w) continue;
+                    if(pix < 0 || pix >= image->w || (pix == x && piy == y)) continue;
                     avg += pixels[(piy * image->w) + pix];
                     count++;
                 }
