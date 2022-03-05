@@ -102,13 +102,14 @@ void greyimage(SDL_Surface *image)
 		b = b >> image->format->Bshift;
 
 		Uint32 a = (pixel & image->format->Amask);
-		//a = a >> image->format->Ashift;
+		a = a >> image->format->Ashift;
 		
 		Uint32 newPix = 0.21f * r + 0.71f * g + 0.07f * b;
 		
 	        
 			// Build the grey pixels
-		pixels[(y * image->w) + x] = newPix;
+		pixels[(y * image->w) + x] = (newPix << image->format->Rshift) | (newPix << image->format->Gshift)
+						| (newPix << image->format->Bshift) | (a << image->format->Ashift);
         }
     }
 }
